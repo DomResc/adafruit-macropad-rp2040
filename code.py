@@ -1,5 +1,5 @@
 """
-A macro/hotkey program for Adafruit MACROPAD. Macro setups are stored in the
+A macro/hotkey program forked from Adafruit MACROPAD. Macro setups are stored in the
 /macros folder (configurable below), load up just the ones you're likely to
 use. Plug into computer's USB port, use dial to select an application macro
 set, press MACROPAD keys to send key sequences and other USB protocols.
@@ -11,14 +11,20 @@ import os
 import time
 import displayio
 import terminalio
+
 from adafruit_display_shapes.rect import Rect
 from adafruit_display_text import label
 from adafruit_macropad import MacroPad
+from rainbowio import colorwheel
+
 
 
 # CONFIGURABLES ------------------------
 
 MACRO_FOLDER = '/macros'
+RAINBOW_SPEED = 1
+RGB_BRIGHTNESS = 0.1
+TOGGLE_RGB = True
 
 
 # CLASSES AND FUNCTIONS ----------------
@@ -36,11 +42,9 @@ class App:
             colors. """
         group[13].text = self.name   # Application name
         for i in range(12):
-            if i < len(self.macros): # Key in use, set label + LED color
-                macropad.pixels[i] = self.macros[i][0]
-                group[i].text = self.macros[i][1]
-            else:  # Key not in use, no label or LED
-                macropad.pixels[i] = 0
+            if i < len(self.macros): # Key in use, set label
+                group[i].text = self.macros[i][0]
+            else:  # Key not in use, no label
                 group[i].text = ''
         macropad.keyboard.release_all()
         macropad.consumer_control.release()
@@ -55,6 +59,7 @@ class App:
 macropad = MacroPad()
 macropad.display.auto_refresh = False
 macropad.pixels.auto_write = False
+tick_count = 0
 
 # Set up displayio group with all the labels
 group = displayio.Group()
@@ -102,6 +107,18 @@ apps[app_index].switch()
 # MAIN LOOP ----------------------------
 
 while True:
+    tick_count += RAINBOW_SPEED
+
+    for i in range(12):
+        if TOGGLE_RGB:
+            pixel_index = (i * 256 // 12) + (tick_count % 256)
+            macropad.pixels[i] = colorwheel(pixel_index & 255)
+            macropad.pixels.brightness = RGB_BRIGHTNESS
+            macropad.pixels.show()
+        else:
+            macropad.pixels[i] = 0
+            macropad.pixels.show()
+
     # Read encoder position. If it's changed, switch apps.
     position = macropad.encoder
     if position != last_position:
@@ -131,7 +148,7 @@ while True:
     # and there IS a corresponding macro available for it...other situations
     # are avoided by 'continue' statements above which resume the loop.
 
-    sequence = apps[app_index].macros[key_number][2]
+    sequence = apps[app_index].macros[key_number][1]
     if pressed:
         # 'sequence' is an arbitrary-length list, each item is one of:
         # Positive integer (e.g. Keycode.KEYPAD_MINUS): key pressed
@@ -140,9 +157,6 @@ while True:
         # String (e.g. "Foo"): corresponding keys pressed & released
         # List []: one or more Consumer Control codes (can also do float delay)
         # Dict {}: mouse buttons/motion (might extend in future)
-        if key_number < 12: # No pixel for encoder button
-            macropad.pixels[key_number] = 0x0d0d0d
-            macropad.pixels.show()
         for item in sequence:
             if isinstance(item, int):
                 if item >= 0:
@@ -152,7 +166,25 @@ while True:
             elif isinstance(item, float):
                 time.sleep(item)
             elif isinstance(item, str):
-                macropad.keyboard_layout.write(item)
+                if item == 'TOGGLE_RGB':
+                    if TOGGLE_RGB:
+                        TOGGLE_RGB = False
+                    else:
+                        TOGGLE_RGB = True
+                elif item == 'BRIGHTNESS-':
+                    if RGB_BRIGHTNESS > 0.2:
+                        RGB_BRIGHTNESS -= 0.1
+                elif item == 'BRIGHTNESS+':
+                    if RGB_BRIGHTNESS < 0.9:
+                        RGB_BRIGHTNESS += 0.1
+                elif item == 'SPEED-':
+                    if RAINBOW_SPEED > 2:
+                        RAINBOW_SPEED -= 1
+                elif item == 'SPEED+':
+                    if RAINBOW_SPEED < 19:
+                        RAINBOW_SPEED += 1
+                else:
+                    macropad.keyboard_layout.write(item)
             elif isinstance(item, list):
                 for code in item:
                     if isinstance(code, int):
@@ -194,6 +226,3 @@ while True:
                 elif 'tone' in item:
                     macropad.stop_tone()
         macropad.consumer_control.release()
-        if key_number < 12: # No pixel for encoder button
-            macropad.pixels[key_number] = apps[app_index].macros[key_number][0]
-            macropad.pixels.show()

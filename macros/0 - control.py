@@ -11,26 +11,26 @@ from adafruit_hid.consumer_control_code import ConsumerControlCode
 from adafruit_hid.keycode import Keycode
 
 app = {               # REQUIRED dict, must be named 'app'
-    'name' : 'Media', # Application name
+    'name' : 'Control', # Application name
     'macros' : [      # List of button macros...
         # COLOR    LABEL    KEY SEQUENCE
         # 1st row ----------
-        ('Vol-', [[ConsumerControlCode.VOLUME_DECREMENT]]),
-        ('', []),
-        ('Vol+', [[ConsumerControlCode.VOLUME_INCREMENT]]),
+        ('<', [Keycode.WINDOWS, Keycode.PAGE_DOWN]),
+        ('[]', [Keycode.WINDOWS, Keycode.TAB]),
+        ('>', [Keycode.WINDOWS, Keycode.PAGE_UP]),
         # 2nd row ----------
         ('', []),
         ('Mute Mic', [Keycode.CONTROL, Keycode.SHIFT, 'a']),
         ('', []),
         # 3rd row ----------
-        ('', []),
+        ('Vol-', [[ConsumerControlCode.VOLUME_DECREMENT]]),
         ('Mute Spk', [[ConsumerControlCode.MUTE]]),
-        ('', []),
+        ('Vol+', [[ConsumerControlCode.VOLUME_INCREMENT]]),
         # 4th row ----------
         ('<<', [[ConsumerControlCode.SCAN_PREVIOUS_TRACK]]),
         ('>||', [[ConsumerControlCode.PLAY_PAUSE]]),
         ('>>', [[ConsumerControlCode.SCAN_NEXT_TRACK]]),
         # Encoder button ---
-        ('', ['TOGGLE_RGB'])
+        ('', [Keycode.WINDOWS, 'l'])
     ]
 }

@@ -23,8 +23,9 @@ from rainbowio import colorwheel
 
 MACRO_FOLDER = '/macros'
 RAINBOW_SPEED = 1
-RGB_BRIGHTNESS = 0.1
-TOGGLE_RGB = True
+RGB_BRIGHTNESS = 0.05
+TOGGLE_RGB = False
+TOGGLE_CYANO = False
 
 
 # CLASSES AND FUNCTIONS ----------------
@@ -115,6 +116,10 @@ while True:
             macropad.pixels[i] = colorwheel(pixel_index & 255)
             macropad.pixels.brightness = RGB_BRIGHTNESS
             macropad.pixels.show()
+        elif TOGGLE_CYANO:
+            macropad.pixels[i] = (255,255,255)
+            macropad.pixels.brightness = RGB_BRIGHTNESS
+            macropad.pixels.show()
         else:
             macropad.pixels[i] = 0
             macropad.pixels.show()
@@ -169,14 +174,23 @@ while True:
                 if item == 'TOGGLE_RGB':
                     if TOGGLE_RGB:
                         TOGGLE_RGB = False
+                        TOGGLE_CYANO = False
                     else:
                         TOGGLE_RGB = True
+                        TOGGLE_CYANO = False
+                elif item == 'TOGGLE_CYANO':
+                    if TOGGLE_CYANO:
+                        TOGGLE_CYANO = False
+                        TOGGLE_RGB = False
+                    else:
+                        TOGGLE_CYANO = True
+                        TOGGLE_RGB = False
                 elif item == 'BRIGHTNESS-':
-                    if RGB_BRIGHTNESS > 0.2:
-                        RGB_BRIGHTNESS -= 0.1
+                    if RGB_BRIGHTNESS > 0.05:
+                        RGB_BRIGHTNESS -= 0.05
                 elif item == 'BRIGHTNESS+':
-                    if RGB_BRIGHTNESS < 0.9:
-                        RGB_BRIGHTNESS += 0.1
+                    if RGB_BRIGHTNESS < 0.95:
+                        RGB_BRIGHTNESS += 0.05
                 elif item == 'SPEED-':
                     if RAINBOW_SPEED > 2:
                         RAINBOW_SPEED -= 1

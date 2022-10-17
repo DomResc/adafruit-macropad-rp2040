@@ -10,27 +10,29 @@
 from adafruit_hid.consumer_control_code import ConsumerControlCode
 from adafruit_hid.keycode import Keycode
 
-app = {               # REQUIRED dict, must be named 'app'
+
+
+app = {                 # REQUIRED dict, must be named 'app'
     'name' : 'Control', # Application name
-    'macros' : [      # List of button macros...
+    'macros' : [        # List of button macros...
         # COLOR    LABEL    KEY SEQUENCE
         # 1st row ----------
-        ('<', [Keycode.WINDOWS, Keycode.PAGE_DOWN]),
-        ('[]', [Keycode.WINDOWS, Keycode.TAB]),
-        ('>', [Keycode.WINDOWS, Keycode.PAGE_UP]),
+        ('<<', [[ConsumerControlCode.SCAN_PREVIOUS_TRACK]]),
+        ('>||', [[ConsumerControlCode.PLAY_PAUSE]]),
+        ('>>', [[ConsumerControlCode.SCAN_NEXT_TRACK]]),
         # 2nd row ----------
         ('', []),
-        ('Mute Mic', [Keycode.CONTROL, Keycode.SHIFT, 'a']),
+        ('Mute Mic', [Keycode.CONTROL, Keycode.ALT, Keycode.KEYPAD_ONE ]),
         ('', []),
         # 3rd row ----------
         ('Vol-', [[ConsumerControlCode.VOLUME_DECREMENT]]),
         ('Mute Spk', [[ConsumerControlCode.MUTE]]),
         ('Vol+', [[ConsumerControlCode.VOLUME_INCREMENT]]),
         # 4th row ----------
-        ('<<', [[ConsumerControlCode.SCAN_PREVIOUS_TRACK]]),
-        ('>||', [[ConsumerControlCode.PLAY_PAUSE]]),
-        ('>>', [[ConsumerControlCode.SCAN_NEXT_TRACK]]),
+        ('[]', [Keycode.WINDOWS, Keycode.TAB]),
+        ('Seach', [Keycode.CONTROL, Keycode.ALT, Keycode.KEYPAD_ZERO ]),
+        ('Clip', [Keycode.CONTROL, Keycode.ALT, Keycode.KEYPAD_TWO ]),
         # Encoder button ---
-        ('', [Keycode.WINDOWS, 'l'])
+        ('', [Keycode.WINDOWS, Keycode.L])
     ]
 }

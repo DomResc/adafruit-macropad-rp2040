@@ -10,27 +10,27 @@
 from adafruit_hid.consumer_control_code import ConsumerControlCode
 from adafruit_hid.keycode import Keycode
 
-app = {               # REQUIRED dict, must be named 'app'
+app = {                  # REQUIRED dict, must be named 'app'
     'name' : 'Settings', # Application name
-    'macros' : [      # List of button macros...
+    'macros' : [         # List of button macros...
         # LABEL    KEY SEQUENCE
         # 1st row ----------
+        ('CapsLock', [Keycode.CAPS_LOCK ]),
         ('', []),
-        ('', []),
-        ('', []),
+        ('NumLock', [Keycode.KEYPAD_NUMLOCK ]),
         # 2nd row ----------
+        ('Brt -', ['BRIGHTNESS-']),
+        ('', []),
+        ('Brt +', ['BRIGHTNESS+']),
+        # 3rd row ----------
         ('Speed -', ['SPEED-']),
         ('', []),
         ('Speed +', ['SPEED+']),
-        # 3rd row ----------
-        ('', []),
-        ('', []),
-        ('', []),
         # 4th row ----------
-        ('Brt -', ['BRIGHTNESS-']),
-        ('Toggle', ['TOGGLE_RGB']),
-        ('Brt +', ['BRIGHTNESS+']),
+        ('Cyano', ['TOGGLE_CYANO']),
+        ('', []),
+        ('RGB', ['TOGGLE_RGB']),
         # Encoder button ---
-        ('', [Keycode.WINDOWS, 'l'])
+        ('', [Keycode.WINDOWS, Keycode.L])
     ]
 }
